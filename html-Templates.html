@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Narrative-Based Requirements Elicitation Tool{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Narrative-Based Requirements Elicitation Tool</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'project_list' %}">Projects</a></li>
+                <li><a href="{% url 'project_create' %}">Create Project</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2024 Narrative-Based Requirements Elicitation Tool</p>
+    </footer>
+</body>
+</html>
+
+{% extends 'base.html' %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+<h2>Projects</h2>
+<ul>
+    {% for project in projects %}
+        <li><a href="{% url 'project_detail' project.id %}">{{ project.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
+{% extends 'base.html' %}
+
+{% block title %}Project Detail{% endblock %}
+
+{% block content %}
+<h2>{{ project.name }}</h2>
+<p>{{ project.description }}</p>
+
+<h3>Stories</h3>
+<ul>
+    {% for story in project.stories.all %}
+        <li>{{ story.title }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'story_create' project.id %}">Add Story</a>
+
+<h3>Requirements</h3>
+<ul>
+    {% for requirement in project.requirements.all %}
+        <li>{{ requirement.text }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'requirement_create' project.id %}">Add Requirement</a>
+
+<h3>Relationships</h3>
+<ul>
+    {% for relationship in project.relationships.all %}
+        <li>{{ relationship.source }} -> {{ relationship.target }}: {{ relationship.type }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'relationship_create' project.id %}">Add Relationship</a>
+
+<a href="{% url 'project_update' project.id %}">Edit Project</a>
+<a href="{% url 'project_delete' project.id %}">Delete Project</a>
+{% endblock %}
+
+{% extends 'base.html' %}
+
+{% block title %}{{ form_title }} Project{% endblock %}
+
+{% block content %}
+<h2>{{ form_title }} Project</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+<a href="{% url 'project_list' %}">Back to Projects</a>
+{% endblock %}
+
+{% extends 'base.html' %}
+
+{% block title %}{{ form_title }} Story{% endblock %}
+
+{% block content %}
+<h2>{{ form_title }} Story</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+<a href="{% url 'project_detail' project.id %}">Back to Project</a>
+{% endblock %}
+
+{% extends 'base.html' %}
+
+{% block title %}{{ form_title }} Requirement{% endblock %}
+
+{% block content %}
+<h2>{{ form_title }} Requirement</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+<a href="{% url 'project_detail' project.id %}">Back to Project</a>
+{% endblock %}
+
+{% extends 'base.html' %}
+
+{% block title %}{{ form_title }} Relationship{% endblock %}
+
+{% block content %}
+<h2>{{ form_title }} Relationship</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+<a href="{% url 'project_detail' project.id %}">Back to Project</a>
+{% endblock %}
+
+{% extends 'base.html' %}
+
+{% block title %}Visualize Requirements{% endblock %}
+
+{% block content %}
+<h2>Visualize Requirements for {{ project.name }}</h2>
+<div id="visualization">
+    <!-- Visualization content will be generated here -->
+</div>
+<a href="{% url 'project_detail' project.id %}">Back to Project</a>
+{% endblock %}
